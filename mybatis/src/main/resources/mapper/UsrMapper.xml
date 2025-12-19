@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mybatis.mapper.UsrMapper">
+    <!-- ===================== -->
+    <!-- INSERT -->
+    <insert id="insert">
+        INSERT INTO usr (
+            usr_nm,
+            usr_email
+        ) VALUES (
+                     #{name},
+                     #{email}
+                 );
+    </insert>
+
+    <select id="findAll" resultType="com.example.mybatis.dto.response.UsrResponse">
+        SELECT
+            u.usr_id    AS id,
+            u.usr_nm    AS name,
+            u.usr_email AS email
+        FROM usr u
+        WHERE del_flg != 'T'
+    </select>
+
+    <update id="update">
+        UPDATE usr
+        <set>
+            <if test="name != null">
+                usr_nm = #{name},
+            </if>
+            <if test="email != null">
+                usr_email = #{email},
+            </if>
+        </set>
+        WHERE usr_id = #{id}
+    </update>
+
+</mapper>
