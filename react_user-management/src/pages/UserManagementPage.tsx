@@ -2,23 +2,14 @@ import { useEffect, useState } from 'react';
 import UserTable from '../components/user/UserTable';
 import type { User } from '../types/user';
 import Modal from '../components/common/Modal';
+import { useUserStore, type UpdateUserDto } from '../store/userStore';
 
 const UserManagePage: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: 'user20251612001',
-      name: 'To Minh Nhat',
-      email: 'tominhat@cyberlogitec.com',
-      status: 'ACTIVE',
-    },
-    {
-      id: 'user20251612002',
-      name: 'Hoang Manh Ha',
-      email: 'hoangmanhha@cyberlogitec.com',
-      status: 'ACTIVE',
-    },
-  ]);
+  const users = useUserStore((state) => state.users);
+  const addUser = useUserStore((state) => state.addUser);
+  const updateUser = useUserStore((state) => state.updateUser);
+  const deleteUser = useUserStore((state) => state.deleteUser);
   const MODAL_TYPES = {
     CONFIRM_DELETE: 'CONFIRM_DELETE',
     EDIT: 'EDIT',
@@ -36,8 +27,8 @@ const UserManagePage: React.FC = () => {
     setModalType(null);
   };
 
-  const handleDelete = (detetedUser: User) => {
-    setUsers((prev) => prev.filter((u) => u.id !== detetedUser.id));
+  const handleDelete = (userId: string) => {
+    deleteUser(userId);
     setSelectedUser(null);
     closeModal();
   };
@@ -45,8 +36,8 @@ const UserManagePage: React.FC = () => {
     if (isEmailDuplicate(updatedUser.email, updatedUser.id)) {
       return false;
     }
-
-    setUsers((prev) => prev.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
+    const { id, ...data }: { id: string } & UpdateUserDto = updatedUser;
+    updateUser(id, data);
 
     setSelectedUser(null);
     closeModal();
@@ -54,16 +45,9 @@ const UserManagePage: React.FC = () => {
   };
   const handleToggleActive = (updatedUser: User) => {
     const newStatus = updatedUser.status === 'ACTIVE' ? 'UNACTIVE' : 'ACTIVE';
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === updatedUser.id
-          ? {
-              ...u,
-              status: newStatus,
-            }
-          : u
-      )
-    );
+    updateUser(updatedUser.id, {
+      status: newStatus,
+    });
 
     setSelectedUser(null);
     closeModal();
@@ -72,7 +56,8 @@ const UserManagePage: React.FC = () => {
     if (isEmailDuplicate(newUser.email)) {
       return false;
     }
-    setUsers((prev) => [...prev, newUser]);
+    const { id, ...data } = newUser;
+    addUser(data);
     closeModal();
     return true;
   };
@@ -225,7 +210,7 @@ const EditModal: React.FC<EditModalProps> = ({ user, onEdit, onCancel }) => {
 
 interface ConfirmDeleteProps {
   user: User | null;
-  onDelete: (user: User) => void;
+  onDelete: (userId: string) => void;
   onCancel: () => void;
 }
 
@@ -240,7 +225,7 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({ user, onDelete, onCancel 
           Cancel
         </button>
         <button
-          onClick={() => onDelete(user)}
+          onClick={() => onDelete(user.id)}
           className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
         >
           Delete
@@ -311,7 +296,7 @@ const AddModal: React.FC<AddModalProps> = ({ onAdd, onCancel }) => {
       return;
     }
     const newUser: User = {
-      id: crypto.randomUUID(),
+      id: 'virtual',
       name: form.name.trim(),
       email: form.email.trim(),
       status: 'ACTIVE',
