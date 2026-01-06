@@ -9,10 +9,12 @@
     <insert id="insert">
         INSERT INTO usr (
             usr_nm,
-            usr_email
+            usr_email,
+            usr_pwd
         ) VALUES (
                      #{name},
-                     #{email}
+                     #{email},
+                     #{pwd}
                  );
     </insert>
 
@@ -37,5 +39,15 @@
         </set>
         WHERE usr_id = #{id}
     </update>
+
+    <select id="findByEmail" resultType="com.example.mybatis.dto.response.UsrResponse">
+        SELECT
+            u.usr_id    AS id,
+            u.usr_nm    AS name,
+            u.usr_email AS email
+        FROM usr u
+        WHERE del_flg != 'T'
+            AND u.usr_email = {email}
+    </select>
 
 </mapper>

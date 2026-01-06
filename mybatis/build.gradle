@@ -29,6 +29,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.flywaydb:flyway-database-postgresql'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.0'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
+	implementation("org.springframework.security:spring-security-jwt:1.1.1.RELEASE")
+	implementation("org.springframework.security:spring-security-web:7.0.2")
+	implementation("org.springframework.security:spring-security-config:7.0.2")
+	implementation("org.springframework.security:spring-security-oauth2-resource-server:7.0.2")
+	implementation("org.springframework.security:spring-security-oauth2-jose:6.1.0")
+
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
@@ -38,6 +46,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:4.0.0'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
+
+
 }
 
 tasks.named('test') {

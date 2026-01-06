@@ -14,6 +14,7 @@ public class Usr {
     private String usrNm;
     private String usrEmail;
     private String usrStatus;
+    private String pwd;
     private String delFlg;
 
     public Usr(String usrNm, String usrEmail) {

@@ -1,5 +1,6 @@
 package com.example.mybatis.service.impl;
 
+import com.example.mybatis.dto.request.RegisterRequest;
 import com.example.mybatis.dto.request.UsrRequest;
 import com.example.mybatis.dto.response.UsrResponse;
 import com.example.mybatis.mapper.UsrMapper;
@@ -14,16 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UsrServiceImpl implements UsrService {
     private final UsrMapper usrMapper;
 
     @Override
-    public int create(UsrRequest req) {
-        usrMapper.insert(req);
-        return 1;
+    public int create(Usr req) {
+        return usrMapper.insert(req);
     }
 
     @Override
@@ -34,6 +33,11 @@ public class UsrServiceImpl implements UsrService {
     @Override
     public int update(UsrRequest req) {
         return usrMapper.update(req);
+    }
+
+    @Override
+    public Usr getUserByEmail(String email) {
+        return usrMapper.findByEmail(email);
     }
 
 }
